@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:pixel_adventure/components/collission_block.dart';
 import 'package:pixel_adventure/components/utils.dart';
 import 'package:pixel_adventure/pixel_adventure.dart';
+import 'package:logger/logger.dart';
+
 
 enum PlayerState { idle, running }
 
@@ -23,8 +25,10 @@ class Player extends SpriteAnimationGroupComponent
   double moveSpeed = 100;
   Vector2 velocity = Vector2.zero();
   bool isOnGround = false;
+  bool hasJumped = false;
   final double _gravity = 9.8;
-  final double _jumpForce = 460;
+  // final double _jumpForce = 460;
+  final double _jumpForce = 300;
   final double _terminalVelocity = 300;
   List<CollissionBlock> collissionBlocks = [];
 
@@ -53,7 +57,17 @@ class Player extends SpriteAnimationGroupComponent
     _applyGravity(dt);
     _checkVerticalCollissions();
 
+    // CheckGrounded();
+
     super.update(dt);
+  }
+
+  void CheckGrounded(){
+      // logger.d("Can see: ${cam.canSee(joystick)}");
+      var log = Logger();
+
+      log.d("Bool OnGround: $isOnGround");
+    
   }
 
   //How to do Keyboard controls
@@ -62,22 +76,16 @@ class Player extends SpriteAnimationGroupComponent
     horizontalMovement = 0;
 
     final isLeftKeyPressed = keysPressed.contains(LogicalKeyboardKey.keyA) ||
-        keysPressed.contains(LogicalKeyboardKey.arrowLeft);
+                              keysPressed.contains(LogicalKeyboardKey.arrowLeft);
     final isRightKeyPressed = keysPressed.contains(LogicalKeyboardKey.keyD) ||
-        keysPressed.contains(LogicalKeyboardKey.arrowRight);
+                              keysPressed.contains(LogicalKeyboardKey.arrowRight);
 
     horizontalMovement += isLeftKeyPressed ? -1 : 0;
     horizontalMovement += isRightKeyPressed ? 1 : 0;
 
-    // if (isLeftKeyPressed && isRightKeyPressed) {
-    //   playerDirection = PlayerDirection.none;
-    // } else if (isLeftKeyPressed) {
-    //   playerDirection = PlayerDirection.left;
-    // } else if (isRightKeyPressed) {
-    //   playerDirection = PlayerDirection.right;
-    // } else {
-    //   playerDirection = PlayerDirection.none;
-    // }
+    hasJumped = keysPressed.contains(LogicalKeyboardKey.keyW) || 
+                keysPressed.contains(LogicalKeyboardKey.arrowUp) ||
+                keysPressed.contains(LogicalKeyboardKey.space);
 
     return super.onKeyEvent(event, keysPressed);
   }
@@ -91,47 +99,30 @@ class Player extends SpriteAnimationGroupComponent
       flipHorizontallyAroundCenter();
     }
 
-    if (velocity.x > 0 || velocity.x < 0) playerState = PlayerState.running;
+    if (velocity.x > 0 || velocity.x < 0) {playerState = PlayerState.running;}
 
     current = playerState;
   }
 
   // Update the player movement
   void _updatePlayerMovement(double dt) {
-    // double dirX = 0.0;
-    // switch (playerDirection) {
-    //   case PlayerDirection.left:
-    //   //checks the sprite facing direction
-    //     if (isFacingRight) {
-    //       flipHorizontallyAroundCenter();
-    //       isFacingRight = false;
-    //     }
-    //     //Sets the player state
-    //     current = PlayerState.running;
-    //     //Moves Player Left
-    //     dirX -= moveSpeed;
 
-    //     break;
-    //   case PlayerDirection.right:
-    //     if (!isFacingRight) {
-    //       flipHorizontallyAroundCenter();
-    //       isFacingRight = true;
-    //     }
-    //     current = PlayerState.running;
-    //     dirX += moveSpeed;
-    //     break;
-    //   case PlayerDirection.none:
-    //     current = PlayerState.idle;
-    //     break;
-    //   default:
-    // }
-
-    // velocity = Vector2(dirX, 0.0);
-    // position += velocity * dt;
-
+    if (hasJumped && isOnGround) {
+      _playerJump(dt);
+    }
+    
     velocity.x = horizontalMovement * moveSpeed;
     position.x += velocity.x * dt;
+  
   }
+
+  void _playerJump(double dt) {
+    velocity.y = -_jumpForce;
+    position.y += velocity.y * dt;
+    isOnGround = false;
+    hasJumped = false;
+  }
+
 
   void _checkHorizontalCollissions() {
     for (final block in collissionBlocks) {
@@ -175,7 +166,6 @@ class Player extends SpriteAnimationGroupComponent
           if (velocity.y < 0) {
             velocity.y = 0;
             position.y = block.y + block.height;
-            isOnGround = true;
             break;
           }
         }
@@ -206,4 +196,5 @@ class Player extends SpriteAnimationGroupComponent
         SpriteAnimationData.sequenced(
             amount: amount, stepTime: stepTime, textureSize: Vector2.all(32)));
   }
+  
 }

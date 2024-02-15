@@ -31,7 +31,9 @@ class Levels extends World {
             // print("Spawned at X: ${spawnPoints.x} Y: ${spawnPoints.y}");
 
             // final player = Player(character: "Ninja Frog", position: Vector2(100.333, 200.333));
+
             player.position = Vector2(spawnPoints.x, spawnPoints.y);
+            
             // player.character = "Virtual Guy";
             add(player);
 
@@ -39,10 +41,12 @@ class Levels extends World {
           default:
         }
       }
+      
 
-      add(Player(character: "Virtual Guy", position: Vector2(46.00, 63.33)));
-      add(Player(character: "Pink Man", position: Vector2(100.333, 150.333)));
-      add(Player(character: "Mask Dude", position: Vector2(200.333, 170.333)));
+      //Extra players Test positions
+      // add(Player(character: "Virtual Guy", position: Vector2(46.00, 63.33)));
+      // add(Player(character: "Pink Man", position: Vector2(100.333, 150.333)));
+      // add(Player(character: "Mask Dude", position: Vector2(200.333, 170.333)));
     }
 
     //Gets the layers for the collision

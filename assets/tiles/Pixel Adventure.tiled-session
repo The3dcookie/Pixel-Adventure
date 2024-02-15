@@ -3,8 +3,9 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "Level-02.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "fileStates": {
         "Level-01.tmx": {
@@ -14,20 +15,24 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 325.66666666666663,
-                "y": 212.33333333333337
+                "x": 319.66666666666663,
+                "y": 183.66666666666663
             }
         },
         "Level-02.tmx": {
             "expandedObjectLayers": [
-                2
+                2,
+                3
             ],
             "scale": 1.508125,
-            "selectedLayer": 0,
+            "selectedLayer": 2,
             "viewCenter": {
                 "x": 320.59676750932454,
-                "y": 184.00331537505178
+                "y": 183.34024036469125
             }
+        },
+        "Pixel Adventure.tsx": {
+            "scaleInDock": 1
         }
     },
     "last.imagePath": "C:/Users/Elvis Emezi/Documents/Unity/pixel_adventure/pixel_adventure/assets/images/Terrain",
@@ -37,9 +42,13 @@
     "map.tileWidth": 16,
     "map.width": 40,
     "openFiles": [
+        "Level-01.tmx",
+        "Level-02.tmx"
     ],
     "project": "Pixel Adventure.tiled-project",
     "recentFiles": [
+        "Level-01.tmx",
+        "Level-02.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
