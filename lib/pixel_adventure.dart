@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
@@ -33,14 +32,14 @@ class PixelAdventure extends FlameGame
     //Code for anchoring the cam to the left
     cam.viewfinder.anchor = Anchor.topLeft;
 
-    // cam.viewfinder.priority = -1;
-
 
     addAll([cam, zaWorld]);
 
     // await Future.delayed(const Duration(seconds: 5));
     if (showJoystick) {
+
       addJoystick();
+   
     }
 
 

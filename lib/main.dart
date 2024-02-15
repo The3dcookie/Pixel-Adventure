@@ -11,7 +11,9 @@ void main() async{
   await Flame.device.fullScreen();
   //Settings for setting the game to landscape
   await Flame.device.setLandscape();
+
   PixelAdventure game = PixelAdventure();
+  
   runApp(GameWidget(game: kDebugMode ? PixelAdventure() : game));
   
   
