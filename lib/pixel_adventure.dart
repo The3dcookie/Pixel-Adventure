@@ -3,8 +3,8 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:pixel_adventure/actors/player.dart';
-import 'package:pixel_adventure/levels/level.dart';
+import 'package:pixel_adventure/components/player.dart';
+import 'package:pixel_adventure/components/level.dart';
 import 'package:logger/logger.dart';
 
 class PixelAdventure extends FlameGame
@@ -45,8 +45,9 @@ class PixelAdventure extends FlameGame
 
     cam.canSee(joystick);
 
-    // print("Can see: ${cam.canSee(joystick)}");
-    logger.d("Can see: ${cam.canSee(joystick)}");
+    //Logger Here
+    // logger.d("Can see: ${cam.canSee(joystick)}");
+    logger.d("You can't say i'm not enoughhhh Smoking hella weed and all the alcohol");
 
 
     return super.onLoad();
@@ -96,15 +97,15 @@ class PixelAdventure extends FlameGame
       case JoystickDirection.left:
       case JoystickDirection.upLeft:
       case JoystickDirection.downLeft:
-        player.playerDirection = PlayerDirection.left;
+        player.horizontalMovement = -1;
         break;
       case JoystickDirection.right:
       case JoystickDirection.upRight:
       case JoystickDirection.downRight:
-        player.playerDirection = PlayerDirection.right;
+      player.horizontalMovement = 1;
         break;
       default:
-        player.playerDirection = PlayerDirection.none;
+      player.horizontalMovement = 0;
         break;
     }
   }
