@@ -6,8 +6,7 @@ import 'package:pixel_adventure/components/utils.dart';
 import 'package:pixel_adventure/pixel_adventure.dart';
 import 'package:logger/logger.dart';
 
-
-enum PlayerState { idle, running }
+enum PlayerState { idle, running, jumping, falling }
 
 // enum PlayerDirection { left, right, none }
 
@@ -36,6 +35,8 @@ class Player extends SpriteAnimationGroupComponent
 
   late final SpriteAnimation idleAnimation;
   late final SpriteAnimation runningAnimation;
+  late final SpriteAnimation jumpingAnimation;
+  late final SpriteAnimation fallingAnimation;
   final double stepTime = 0.05;
 
   @override
@@ -62,12 +63,11 @@ class Player extends SpriteAnimationGroupComponent
     super.update(dt);
   }
 
-  void CheckGrounded(){
-      // logger.d("Can see: ${cam.canSee(joystick)}");
-      var log = Logger();
+  void CheckGrounded() {
+    // logger.d("Can see: ${cam.canSee(joystick)}");
+    var log = Logger();
 
-      log.d("Bool OnGround: $isOnGround");
-    
+    log.d("Bool OnGround: $isOnGround");
   }
 
   //How to do Keyboard controls
@@ -76,16 +76,16 @@ class Player extends SpriteAnimationGroupComponent
     horizontalMovement = 0;
 
     final isLeftKeyPressed = keysPressed.contains(LogicalKeyboardKey.keyA) ||
-                              keysPressed.contains(LogicalKeyboardKey.arrowLeft);
+        keysPressed.contains(LogicalKeyboardKey.arrowLeft);
     final isRightKeyPressed = keysPressed.contains(LogicalKeyboardKey.keyD) ||
-                              keysPressed.contains(LogicalKeyboardKey.arrowRight);
+        keysPressed.contains(LogicalKeyboardKey.arrowRight);
 
     horizontalMovement += isLeftKeyPressed ? -1 : 0;
     horizontalMovement += isRightKeyPressed ? 1 : 0;
 
-    hasJumped = keysPressed.contains(LogicalKeyboardKey.keyW) || 
-                keysPressed.contains(LogicalKeyboardKey.arrowUp) ||
-                keysPressed.contains(LogicalKeyboardKey.space);
+    hasJumped = keysPressed.contains(LogicalKeyboardKey.keyW) ||
+        keysPressed.contains(LogicalKeyboardKey.arrowUp) ||
+        keysPressed.contains(LogicalKeyboardKey.space);
 
     return super.onKeyEvent(event, keysPressed);
   }
@@ -99,21 +99,35 @@ class Player extends SpriteAnimationGroupComponent
       flipHorizontallyAroundCenter();
     }
 
-    if (velocity.x > 0 || velocity.x < 0) {playerState = PlayerState.running;}
+
+    //Check if moving set to running
+    if (velocity.x > 0 || velocity.x < 0) {
+      playerState = PlayerState.running;
+    }
+
+    //Check if falling set to falling
+    if (velocity.y > 0) {
+      playerState = PlayerState.falling;
+    }
+
+    //Check if jumping set to jumping
+    if (velocity.y < 0) {
+      playerState = PlayerState.jumping;
+    }
 
     current = playerState;
   }
 
   // Update the player movement
   void _updatePlayerMovement(double dt) {
-
     if (hasJumped && isOnGround) {
       _playerJump(dt);
     }
-    
+
+    // if (velocity.y > _gravity) { isOnGround = false;} cant jump on air optional
+
     velocity.x = horizontalMovement * moveSpeed;
     position.x += velocity.x * dt;
-  
   }
 
   void _playerJump(double dt) {
@@ -122,7 +136,6 @@ class Player extends SpriteAnimationGroupComponent
     isOnGround = false;
     hasJumped = false;
   }
-
 
   void _checkHorizontalCollissions() {
     for (final block in collissionBlocks) {
@@ -155,6 +168,14 @@ class Player extends SpriteAnimationGroupComponent
     for (final block in collissionBlocks) {
       if (block.isPlatform) {
         //Handle platform collission
+        if (checkCollission(this, block)) {
+          if (velocity.y > 0) {
+            velocity.y = 0;
+            position.y = block.y - width;
+            isOnGround = true;
+            break;
+          }
+        }
       } else {
         if (checkCollission(this, block)) {
           if (velocity.y > 0) {
@@ -179,10 +200,16 @@ class Player extends SpriteAnimationGroupComponent
 
     runningAnimation = _spriteAnimation("Run", 11);
 
+    jumpingAnimation = _spriteAnimation("Jump", 1);
+    
+    fallingAnimation = _spriteAnimation("Fall", 1);
+
     // List of all animations paired with the player enum state
     animations = {
       PlayerState.idle: idleAnimation,
-      PlayerState.running: runningAnimation
+      PlayerState.running: runningAnimation,
+      PlayerState.jumping: jumpingAnimation,
+      PlayerState.falling: fallingAnimation,
     };
 
     //Set current animation
@@ -196,5 +223,4 @@ class Player extends SpriteAnimationGroupComponent
         SpriteAnimationData.sequenced(
             amount: amount, stepTime: stepTime, textureSize: Vector2.all(32)));
   }
-  
 }

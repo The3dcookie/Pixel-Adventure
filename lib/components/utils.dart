@@ -11,11 +11,12 @@ bool checkCollission(player, block){
   final blockHeigth = block.height;
 
   final fixedX = player.scale.x < 0 ? playerX - playerWidth : playerX;
+  final fixedY = block.isPlatform ? playerY + playerHeight : playerY; 
 
   return ( 
     //If the very top of our player(playerY) is less than the bottom of a block (blockY(Block Tip Top) + block height)
     //Meaning it's inside it by being less than the block tip top + Block Height
-    playerY < blockY + blockHeigth && 
+    fixedY < blockY + blockHeigth && 
     //If the Player tip plus height is greater than the TOP of the block, meaning it's further down, i.e it's inside the block
     playerY + playerHeight > blockY &&
     //If the player's x is less than the block x + block height i.e now the RIGHT of the block. 
