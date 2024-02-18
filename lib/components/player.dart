@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/services.dart';
+import 'package:pixel_adventure/components/checkpoint.dart';
 import 'package:pixel_adventure/components/collission_block.dart';
 import 'package:pixel_adventure/components/custom_hitbox.dart';
 import 'package:pixel_adventure/components/fruit.dart';
@@ -10,7 +11,7 @@ import 'package:pixel_adventure/components/utils.dart';
 import 'package:pixel_adventure/pixel_adventure.dart';
 import 'package:logger/logger.dart';
 
-enum PlayerState { idle, running, jumping, falling, hit, appearing }
+enum PlayerState { idle, running, jumping, falling, hit, appearing, disappearing }
 
 // enum PlayerDirection { left, right, none }
 
@@ -30,6 +31,7 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<PixelAdventur
   bool isOnGround = false;
   bool hasJumped = false;
   bool gotHit = false;
+  bool hasReachedCheckpoint = false;
   final double _gravity = 9.8;
   // final double _jumpForce = 460;
   final double _jumpForce = 300;
@@ -45,6 +47,7 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<PixelAdventur
   late final SpriteAnimation fallingAnimation;
   late final SpriteAnimation hitAnimation;
   late final SpriteAnimation appearingAnimation;
+  late final SpriteAnimation disappearingAnimation;
   final double stepTime = 0.05;
 
   @override
@@ -54,7 +57,7 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<PixelAdventur
 
     startingPosition = Vector2(position.x, position.y);
 
-    game.logger.d("Starting Position = $startingPosition");
+    // game.logger.d("Starting Position = $startingPosition");
 
     //Debug Box 
     // debugMode = true;
@@ -72,7 +75,7 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<PixelAdventur
   //Called every frame basically update function
   void update(double dt) {
 
-    if (!gotHit) {
+    if (!gotHit && !hasReachedCheckpoint) {
     _updatePlayerState();
     _updatePlayerMovement(dt);
     _checkHorizontalCollissions();
@@ -117,17 +120,28 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<PixelAdventur
  //Collider overlap detections over here
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    
-    //Log the fruit hit
-    if (other is Fruit) {
-      // game.logger.d("Hit a ${other.fruit}");
-      other.collidedWithPlayer();
-    }
 
-    if (other is Saw) {
-      // other.collidedWithPlayer();
-      _respawn();
+    if (!hasReachedCheckpoint) {
+          //Log the fruit hit
+       if (other is Fruit) {
+         // game.logger.d("Hit a ${other.fruit}");
+         other.collidedWithPlayer();
+       }
+
+       if (other is Saw) {
+         // other.collidedWithPlayer();
+         _respawn();
+       }
+
+       if (other is Checkpoint  && !hasReachedCheckpoint) {
+       
+         // hasReachedCheckpoint = other.hasReachedCheckpoint;
+         _reachedCheckpoint();
+       }
+      
     }
+    
+
     super.onCollision(intersectionPoints, other);
   }
 
@@ -249,6 +263,8 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<PixelAdventur
 
     appearingAnimation = _specialSpriteAnimation("Appearing", 7);
 
+    disappearingAnimation = _specialSpriteAnimation("Desappearing", 7);
+
     // List of all animations paired with the player enum state
     animations = {
       PlayerState.idle: idleAnimation,
@@ -257,6 +273,7 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<PixelAdventur
       PlayerState.falling: fallingAnimation,
       PlayerState.hit: hitAnimation,
       PlayerState.appearing: appearingAnimation,
+      PlayerState.disappearing: disappearingAnimation,
     };
 
     //Set current animation
@@ -282,7 +299,7 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<PixelAdventur
   void _respawn() {
     const hitDuration = Duration(milliseconds: 350);
     const appearingDuration = Duration(milliseconds: 350);
-    const canMoveDuration = Duration(milliseconds: 350);
+    // const canMoveDuration = Duration(milliseconds: 350);
 
     gotHit = true;
 
@@ -306,10 +323,9 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<PixelAdventur
 
         position = startingPosition; 
 
-        gotHit = false;
-
         _updatePlayerState(); 
 
+        gotHit = false;
 
         // Future.delayed(canMoveDuration, (){gotHit = false;});
         
@@ -319,5 +335,28 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<PixelAdventur
 
 
     // position = startingPosition;
+  }
+  
+  void _reachedCheckpoint() {
+    hasReachedCheckpoint = true;
+
+    if (scale.x > 0) {
+      position = position - Vector2.all(32);
+    }
+    else if (scale.x < 0) {
+      position = position + Vector2(32, -32);
+    }
+
+    current = PlayerState.disappearing;
+
+    const reachedCHeckpointDuration = Duration(milliseconds: 350);
+    Future.delayed(reachedCHeckpointDuration, (){hasReachedCheckpoint = false; position = Vector2.all(-640);});
+
+    const waitToChangeDuration = Duration(seconds: 3);
+    Future.delayed(
+      waitToChangeDuration, (){
+        //switch level
+        game.loadNextLevel();
+        }); 
   }
 }

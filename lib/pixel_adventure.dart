@@ -7,49 +7,48 @@ import 'package:pixel_adventure/components/player.dart';
 import 'package:pixel_adventure/components/level.dart';
 import 'package:logger/logger.dart';
 
-class PixelAdventure extends FlameGame
-    with HasKeyboardHandlerComponents, DragCallbacks, HasCollisionDetection {
-  late final CameraComponent cam;
+class PixelAdventure extends FlameGame with HasKeyboardHandlerComponents, DragCallbacks, HasCollisionDetection {
+  late CameraComponent cam;
   late Logger logger;
 
   //Reference to the player
   Player player = Player();
 
-  late JoystickComponent joystick;
+  late JoystickComponent joystick = JoystickComponent(
+      // size: 32,
+      priority: 20,
+      knob: SpriteComponent(
+        size: Vector2.all(50),
+        sprite: Sprite(
+          images.fromCache("HUD/Knob.png"),
+        ),
+      ),
+      background: SpriteComponent(
+        size: Vector2.all(70),
+        sprite: Sprite(
+          images.fromCache("HUD/Joystick.png"),
+        ),
+      ),
+      margin: const EdgeInsets.only(left: 32, bottom: 32),
+      // anchor: Anchor.center
+    );
+
   bool showJoystick = false;
+  
+  List<String> levelNames = ["Level-01", "Level-02", "Level-03"];
+  
+  int currentLevelIndex = 2;
 
   @override
   FutureOr<void> onLoad() async {
     // priority = -2;
     logger = Logger();
+
     //Loading all images into cache here
     await images.loadAllImages();
 
-    final zaWorld = Levels(levelName: "Level-03", player: player);
-
-    //Camera that sees the worls here
-    cam = CameraComponent.withFixedResolution(
-        world: zaWorld, width: 640, height: 360);
-
-    //Code for anchoring the cam to the left
-    cam.viewfinder.anchor = Anchor.topLeft;
-
-    addAll([cam, zaWorld]);
-
-    // await Future.delayed(const Duration(seconds: 5));
-    if (showJoystick) {
-      addJoystick();
-
-      logger.d("Can see: ${cam.canSee(joystick)}");
-
-    }
-
-
-
-    //Logger Here
-    // logger.d("Can see: ${cam.canSee(joystick)}");
-    logger.d("You can't say i'm not enoughhhh Smoking hella weed and all the alcohol");
-
+    _loadLevel();
+    
     return super.onLoad();
   }
 
@@ -63,7 +62,7 @@ class PixelAdventure extends FlameGame
   void addJoystick() {
     joystick = JoystickComponent(
       // size: 32,
-      // priority: -1,
+      priority: 10,
       knob: SpriteComponent(
         size: Vector2.all(50),
         sprite: Sprite(
@@ -111,5 +110,47 @@ class PixelAdventure extends FlameGame
         player.horizontalMovement = 0;
         break;
     }
+  }
+  
+  void loadNextLevel(){
+    //Deleted the level
+    removeWhere((component) => component is Levels);
+
+    if (currentLevelIndex < levelNames.length - 1) {
+      currentLevelIndex++;
+      _loadLevel();
+    }
+    else{
+      //No more Levels
+      currentLevelIndex = 0;
+      _loadLevel();
+    }
+  }
+
+  void _loadLevel() {
+    //A second of delay so that the previous level deletes properly
+    Future.delayed(const Duration(seconds: 1), () {
+
+    Levels zaWorld = Levels(levelName: levelNames[currentLevelIndex], player: player);
+
+    //Camera that sees the worls here
+    cam = CameraComponent.withFixedResolution(world: zaWorld, width: 640, height: 360);
+
+    //Code for anchoring the cam to the left
+    cam.viewfinder.anchor = Anchor.topLeft;
+
+    addAll([cam, zaWorld, ]);
+
+     if (showJoystick) {
+      // addJoystick();
+      add(joystick);
+
+      // logger.d("Can see: ${cam.canSee(joystick)}");
+    }
+
+
+    });
+
+
   }
 }
