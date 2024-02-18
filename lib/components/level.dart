@@ -3,6 +3,7 @@ import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:pixel_adventure/components/background_tile.dart';
 import 'package:pixel_adventure/components/collission_block.dart';
+import 'package:pixel_adventure/components/fruit.dart';
 import 'package:pixel_adventure/components/player.dart';
 import 'package:pixel_adventure/pixel_adventure.dart';
 
@@ -73,8 +74,8 @@ class Levels extends World with HasGameRef<PixelAdventure>{
     final spawnPointLayer = level.tileMap.getLayer<ObjectGroup>("SpawnPoint");
 
     if (spawnPointLayer != null) {
-      for (final spawnPoints in spawnPointLayer.objects) {
-        switch (spawnPoints.class_) {
+      for (final spawnPoint in spawnPointLayer.objects) {
+        switch (spawnPoint.class_) {
           case "Player":
             // final player = Player(character: "Ninja Frog", position: Vector2(spawnPoints.x, spawnPoints.y));
 
@@ -82,11 +83,17 @@ class Levels extends World with HasGameRef<PixelAdventure>{
 
             // final player = Player(character: "Ninja Frog", position: Vector2(100.333, 200.333));
 
-            player.position = Vector2(spawnPoints.x, spawnPoints.y);
+            player.position = Vector2(spawnPoint.x, spawnPoint.y);
             
             // player.character = "Virtual Guy";
             add(player);
 
+            break;
+
+            case "Fruit": 
+            final fruit = Fruit(fruit: spawnPoint.name, position: Vector2(spawnPoint.x, spawnPoint.y), size: Vector2(spawnPoint.width, spawnPoint.height));
+            // game.logger.d(spawnPoint.name);
+            add(fruit);
             break;
           default:
         }

@@ -8,9 +8,9 @@ import 'package:pixel_adventure/components/level.dart';
 import 'package:logger/logger.dart';
 
 class PixelAdventure extends FlameGame
-    with HasKeyboardHandlerComponents, DragCallbacks {
+    with HasKeyboardHandlerComponents, DragCallbacks, HasCollisionDetection {
   late final CameraComponent cam;
-  late var logger;
+  late Logger logger;
 
   //Reference to the player
   Player player = Player();
@@ -48,8 +48,7 @@ class PixelAdventure extends FlameGame
 
     //Logger Here
     // logger.d("Can see: ${cam.canSee(joystick)}");
-    logger.d(
-        "You can't say i'm not enoughhhh Smoking hella weed and all the alcohol");
+    logger.d("You can't say i'm not enoughhhh Smoking hella weed and all the alcohol");
 
     return super.onLoad();
   }

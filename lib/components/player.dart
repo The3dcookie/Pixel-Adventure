@@ -3,7 +3,8 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/services.dart';
 import 'package:pixel_adventure/components/collission_block.dart';
-import 'package:pixel_adventure/components/player_hitbox.dart';
+import 'package:pixel_adventure/components/custom_hitbox.dart';
+import 'package:pixel_adventure/components/fruit.dart';
 import 'package:pixel_adventure/components/utils.dart';
 import 'package:pixel_adventure/pixel_adventure.dart';
 import 'package:logger/logger.dart';
@@ -13,7 +14,7 @@ enum PlayerState { idle, running, jumping, falling }
 // enum PlayerDirection { left, right, none }
 
 class Player extends SpriteAnimationGroupComponent
-    with HasGameRef<PixelAdventure>, KeyboardHandler {
+    with HasGameRef<PixelAdventure>, KeyboardHandler, CollisionCallbacks {
   String character;
 
   // Player({position, required this.character}) : super(position: position);
@@ -32,7 +33,7 @@ class Player extends SpriteAnimationGroupComponent
   final double _jumpForce = 300;
   final double _terminalVelocity = 300;
   List<CollissionBlock> collissionBlocks = [];
-  PlayerHitbox hitbox = PlayerHitbox(offsetX: 10, offsetY: 6, width: 14, height: 25,);
+  CustomHitbox hitbox = CustomHitbox(offsetX: 10, offsetY: 6, width: 14, height: 25,);
 
   // bool isFacingRight = true; //Not needed in refactor
 
@@ -48,7 +49,7 @@ class Player extends SpriteAnimationGroupComponent
     _loadAllAnimations();
 
     //Debug Box 
-    // debugMode = true;
+    debugMode = true;
 
     add(
       RectangleHitbox(
@@ -98,6 +99,17 @@ class Player extends SpriteAnimationGroupComponent
         keysPressed.contains(LogicalKeyboardKey.space);
 
     return super.onKeyEvent(event, keysPressed);
+  }
+
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
+
+    
+    //LOg the fruti hit
+    if (other is Fruit) {
+      game.logger.d("Hit a ${other.fruit}");
+    }
+    super.onCollision(intersectionPoints, other);
   }
 
   void _updatePlayerState() {
