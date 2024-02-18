@@ -20,6 +20,7 @@ class PixelAdventure extends FlameGame
 
   @override
   FutureOr<void> onLoad() async {
+    // priority = -2;
     logger = Logger();
     //Loading all images into cache here
     await images.loadAllImages();

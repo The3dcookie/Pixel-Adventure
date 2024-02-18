@@ -32,7 +32,7 @@ class Player extends SpriteAnimationGroupComponent
   final double _jumpForce = 300;
   final double _terminalVelocity = 300;
   List<CollissionBlock> collissionBlocks = [];
-  PlayerHitbox hitbox = PlayerHitbox(offsetX: 10, offsetY: 4, width: 14, height: 28,);
+  PlayerHitbox hitbox = PlayerHitbox(offsetX: 10, offsetY: 6, width: 14, height: 25,);
 
   // bool isFacingRight = true; //Not needed in refactor
 
@@ -47,7 +47,8 @@ class Player extends SpriteAnimationGroupComponent
   FutureOr<void> onLoad() {
     _loadAllAnimations();
 
-    debugMode = true;
+    //Debug Box 
+    // debugMode = true;
 
     add(
       RectangleHitbox(

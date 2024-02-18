@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
+import 'package:pixel_adventure/components/background_tile.dart';
 import 'package:pixel_adventure/components/collission_block.dart';
 import 'package:pixel_adventure/components/player.dart';
+import 'package:pixel_adventure/pixel_adventure.dart';
 
-class Levels extends World {
+class Levels extends World with HasGameRef<PixelAdventure>{
   final String levelName;
   final Player player;
   Levels({required this.levelName, required this.player});
@@ -19,7 +21,55 @@ class Levels extends World {
 
     add(level);
 
-    //Gets the spawn point from the spawn point layer you made in Tiled App
+    _scrollingBackground();
+    _spawningObjects();
+    _addCollissions();
+
+   
+
+    //Sets the collission blocks from the level file in the collission block List on the player file
+    player.collissionBlocks = collissionBlocks;
+
+    return super.onLoad();
+  }
+  
+  void _scrollingBackground() {
+    final backgroundLayer = level.tileMap.getLayer("Background");
+
+    const tileSize = 64;
+
+    final numTilesY = (game.size.y / tileSize).floor();
+    final numTilesX = (game.size.x / tileSize).floor();
+
+
+
+
+    
+    if (backgroundLayer != null) {
+      final backgroundColor = backgroundLayer.properties.getValue("BackgroundColor");//Add the C to fix
+
+    for (double y = 0; y < game.size.y / numTilesY; y++) {
+      for (double x = 0; x < numTilesX; x++) {
+              
+        final backgroundTile = BackgroundTile(color: backgroundColor ?? "Gray", position: Vector2(x * tileSize, y * tileSize - tileSize) );
+        add(backgroundTile);
+        
+      }
+
+                
+
+            
+      
+    }
+
+
+      
+
+    }
+  }
+  
+  void _spawningObjects() {
+     //Gets the spawn point from the spawn point layer you made in Tiled App
     final spawnPointLayer = level.tileMap.getLayer<ObjectGroup>("SpawnPoint");
 
     if (spawnPointLayer != null) {
@@ -48,7 +98,10 @@ class Levels extends World {
       // add(Player(character: "Pink Man", position: Vector2(100.333, 150.333)));
       // add(Player(character: "Mask Dude", position: Vector2(200.333, 170.333)));
     }
-
+  }
+  
+  void _addCollissions() {
+    
     //Gets the layers for the collision
     final collissionLayer = level.tileMap.getLayer<ObjectGroup>("Collisions");
 
@@ -79,9 +132,5 @@ class Levels extends World {
         }
       }
     }
-    //Sets the collission blocks from the level file in the collission block List on the player file
-    player.collissionBlocks = collissionBlocks;
-
-    return super.onLoad();
   }
 }
