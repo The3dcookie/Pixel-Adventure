@@ -49,7 +49,7 @@ class Player extends SpriteAnimationGroupComponent
     _loadAllAnimations();
 
     //Debug Box 
-    debugMode = true;
+    // debugMode = true;
 
     add(
       RectangleHitbox(

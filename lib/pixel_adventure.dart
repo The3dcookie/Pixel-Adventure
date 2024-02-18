@@ -25,7 +25,7 @@ class PixelAdventure extends FlameGame
     //Loading all images into cache here
     await images.loadAllImages();
 
-    final zaWorld = Levels(levelName: "Level-02", player: player);
+    final zaWorld = Levels(levelName: "Level-03", player: player);
 
     //Camera that sees the worls here
     cam = CameraComponent.withFixedResolution(
