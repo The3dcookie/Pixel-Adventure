@@ -43,9 +43,6 @@ class Levels extends World with HasGameRef<PixelAdventure>{
     final numTilesY = (game.size.y / tileSize).floor();
     final numTilesX = (game.size.x / tileSize).floor();
 
-
-
-
     
     if (backgroundLayer != null) {
       final backgroundColor = backgroundLayer.properties.getValue("BackgroundColor");//Add the C to fix
@@ -57,16 +54,7 @@ class Levels extends World with HasGameRef<PixelAdventure>{
         add(backgroundTile);
         
       }
-
-                
-
-            
-      
     }
-
-
-      
-
     }
   }
   
@@ -99,6 +87,7 @@ class Levels extends World with HasGameRef<PixelAdventure>{
 
             case "Saw":
             final isVertical = spawnPoint.properties.getValue("isVertical");
+            // game.logger.d("Is going Vertical is: $isVertical");
             final offNeg = spawnPoint.properties.getValue("offNeg");
             final offPos = spawnPoint.properties.getValue("offPos");
             final saw = Saw(

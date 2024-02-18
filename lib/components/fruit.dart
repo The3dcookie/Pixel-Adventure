@@ -36,7 +36,7 @@ class Fruit extends SpriteAnimationComponent with HasGameRef<PixelAdventure>, Co
        
       animation = SpriteAnimation.fromFrameData(game.images.fromCache("Items/Fruits/Collected.png"), SpriteAnimationData.sequenced(amount: 6, stepTime: stepTime, loop: false ,textureSize: Vector2.all(32)));
 
-      game.logger.d("Hit a $fruit");
+      // game.logger.d("Hit a $fruit");
 
       _collected = true;
 
