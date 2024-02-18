@@ -105,9 +105,10 @@ class Player extends SpriteAnimationGroupComponent
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
 
     
-    //LOg the fruti hit
+    //LOg the fruit hit
     if (other is Fruit) {
-      game.logger.d("Hit a ${other.fruit}");
+      // game.logger.d("Hit a ${other.fruit}");
+      other.collidedWithPlayer();
     }
     super.onCollision(intersectionPoints, other);
   }
