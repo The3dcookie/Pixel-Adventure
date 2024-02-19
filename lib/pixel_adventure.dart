@@ -3,13 +3,22 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:pixel_adventure/components/jump_button.dart';
 import 'package:pixel_adventure/components/player.dart';
 import 'package:pixel_adventure/components/level.dart';
 import 'package:logger/logger.dart';
 
-class PixelAdventure extends FlameGame with HasKeyboardHandlerComponents, DragCallbacks, HasCollisionDetection {
+class PixelAdventure extends FlameGame 
+         with 
+         
+         HasKeyboardHandlerComponents, 
+         DragCallbacks, 
+         HasCollisionDetection, 
+         TapCallbacks 
+         
+  {
   late CameraComponent cam;
-  late Logger logger;
+  final Logger logger = Logger();
 
   //Reference to the player
   Player player = Player();
@@ -33,7 +42,7 @@ class PixelAdventure extends FlameGame with HasKeyboardHandlerComponents, DragCa
       // anchor: Anchor.center
     );
 
-  bool showJoystick = false;
+  bool showControls = true;
   
   List<String> levelNames = ["Level-01", "Level-02", "Level-03"];
   
@@ -42,12 +51,15 @@ class PixelAdventure extends FlameGame with HasKeyboardHandlerComponents, DragCa
   @override
   FutureOr<void> onLoad() async {
     // priority = -2;
-    logger = Logger();
+
+    // debugMode = true;
 
     //Loading all images into cache here
     await images.loadAllImages();
 
     _loadLevel();
+
+
     
     return super.onLoad();
   }
@@ -62,6 +74,7 @@ class PixelAdventure extends FlameGame with HasKeyboardHandlerComponents, DragCa
   void addJoystick() {
     joystick = JoystickComponent(
       // size: 32,
+      
       priority: 10,
       knob: SpriteComponent(
         size: Vector2.all(50),
@@ -84,7 +97,7 @@ class PixelAdventure extends FlameGame with HasKeyboardHandlerComponents, DragCa
 
   @override
   void update(double dt) {
-    if (showJoystick) {
+    if (showControls) {
       updateJoystick();
     }
     super.update(dt);
@@ -141,12 +154,16 @@ class PixelAdventure extends FlameGame with HasKeyboardHandlerComponents, DragCa
 
     addAll([cam, zaWorld, ]);
 
-     if (showJoystick) {
+          if (showControls) {
       // addJoystick();
       add(joystick);
+      add(JumpButton());
 
       // logger.d("Can see: ${cam.canSee(joystick)}");
+      logger.d("Logger Works");
     }
+
+
 
 
     });

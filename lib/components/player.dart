@@ -39,6 +39,9 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<PixelAdventur
   List<CollissionBlock> collissionBlocks = [];
   CustomHitbox hitbox = CustomHitbox(offsetX: 10, offsetY: 6, width: 14, height: 25,);
 
+  double fixedDeltaTime = 1/60;
+  double accumulatedTime = 0;
+
   // bool isFacingRight = true; //Not needed in refactor
 
   late final SpriteAnimation idleAnimation;
@@ -74,14 +77,24 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<PixelAdventur
   @override
   //Called every frame basically update function
   void update(double dt) {
+    accumulatedTime += dt;
 
-    if (!gotHit && !hasReachedCheckpoint) {
-    _updatePlayerState();
-    _updatePlayerMovement(dt);
-    _checkHorizontalCollissions();
-    _applyGravity(dt);
+    while (accumulatedTime > fixedDeltaTime) {
+    
+     if (!gotHit && !hasReachedCheckpoint) {
+     _updatePlayerState();
+     _updatePlayerMovement(fixedDeltaTime);
+     _checkHorizontalCollissions();
+     _applyGravity(fixedDeltaTime);
     _checkVerticalCollissions();
+    
     }
+    
+    accumulatedTime -= fixedDeltaTime;
+    
+    }
+
+
 
 
     // CheckGrounded();
@@ -117,11 +130,10 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<PixelAdventur
   }
 
 
- //Collider overlap detections over here
+ //Collider overlap detections once over here
   @override
-  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-
-    if (!hasReachedCheckpoint) {
+  void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) {
+     if (!hasReachedCheckpoint) {
           //Log the fruit hit
        if (other is Fruit) {
          // game.logger.d("Hit a ${other.fruit}");
@@ -138,11 +150,8 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<PixelAdventur
          // hasReachedCheckpoint = other.hasReachedCheckpoint;
          _reachedCheckpoint();
        }
-      
     }
-    
-
-    super.onCollision(intersectionPoints, other);
+    super.onCollisionStart(intersectionPoints, other);
   }
 
   void _updatePlayerState() {
@@ -259,7 +268,7 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<PixelAdventur
     
     fallingAnimation = _spriteAnimation("Fall", 1);
 
-    hitAnimation = _spriteAnimation("Hit", 7);
+    hitAnimation = _spriteAnimation("Hit", 7)..loop = false;
 
     appearingAnimation = _specialSpriteAnimation("Appearing", 7);
 
@@ -293,48 +302,36 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<PixelAdventur
     return SpriteAnimation.fromFrameData(
         game.images.fromCache("Main Characters/$state (96x96).png"),
         SpriteAnimationData.sequenced(
-            amount: amount, stepTime: stepTime, textureSize: Vector2.all(96)));
+            amount: amount, stepTime: stepTime, textureSize: Vector2.all(96), loop: false,));
   }
 
-  void _respawn() {
-    const hitDuration = Duration(milliseconds: 350);
-    const appearingDuration = Duration(milliseconds: 350);
-    // const canMoveDuration = Duration(milliseconds: 350);
+  void _respawn() async {
 
     gotHit = true;
 
     current = PlayerState.hit;
 
-    // Future.delayed(const Duration(milliseconds: 350, () 
-    //   //Add particle effects
-    //   //This fixed the flipped sprite on respawn and makes it face the right direction
-    //   scale.x = 1
-    //   () => position = startingPosition
-    //   );
-    Future.delayed(hitDuration, ()
-    {
+    //Wait for animation to complete
+    await animationTicker?.completed;
+
+    //Reset animation ticker
+    animationTicker?.reset();
+
+
       scale.x = 1; 
       position = startingPosition - Vector2.all(32); 
       current = PlayerState.appearing;
-      Future.delayed(appearingDuration,()
-      {
 
-        velocity = Vector2.zero(); 
+    await animationTicker?.completed;
+    animationTicker?.reset();
 
-        position = startingPosition; 
+    velocity = Vector2.zero(); 
 
-        _updatePlayerState(); 
+    position = startingPosition; 
 
-        gotHit = false;
+   _updatePlayerState(); 
 
-        // Future.delayed(canMoveDuration, (){gotHit = false;});
-        
-        });
-      
-      });
-
-
-    // position = startingPosition;
+    gotHit = false;
   }
   
   void _reachedCheckpoint() {
