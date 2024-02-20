@@ -40,13 +40,17 @@ class PixelAdventure extends FlameGame
       ),
       margin: const EdgeInsets.only(left: 32, bottom: 32),
       // anchor: Anchor.center
-    );
+    ).. priority = 10;
 
   bool showControls = true;
-  
+
+  bool playSounds = true;
+
+  double soundVolume = 1.0;
+    
   List<String> levelNames = ["Level-01", "Level-02", "Level-03"];
   
-  int currentLevelIndex = 2;
+  int currentLevelIndex = 0;
 
   @override
   FutureOr<void> onLoad() async {
@@ -90,7 +94,7 @@ class PixelAdventure extends FlameGame
       ),
       margin: const EdgeInsets.only(left: 32, bottom: 32),
       // anchor: Anchor.center
-    );
+    ).. priority = 10;
 
     add(joystick);
   }
