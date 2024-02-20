@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="142">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="143">
  <tileset firstgid="1" source="Pixel Adventure.tsx"/>
  <layer id="2" name="Background" width="40" height="23">
   <properties>
    <property name="BackgroundColor" value="Yellow"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJyTYGBgkBjFFOMCNDaxmF7uiwHitkGAY3G4r5BhcIB8hlH3UQLwuU8DiDWBWGvAXEff8OMFYj4o5sehBhYmsHAZSfFLTPhQ030DAUZK/FISl6Toxea+AobBHb8w9ykPkBuRAT73sQMxBxbMSaGd24F4BxF4JwH3yQKxHBYsT6H7zgLxOSLweQLuMwZiEyzYlEL3PQbiJ0TgpzjcB8JFQBw1CHAxDvdhC9OBbjOPYsoxACFQc7s=
+   eJyTYGBgkBjFFOMCNDaxmF7uiwHitkGAY3G4r5BhcIB8hlH3UQLwuU8DiDWBWIuO7oHZCbOXnuHHC8R8UMxPpJ6RFL/khA86GMj4JQcMZffhi19K4hKfXmLit4BhcIcfzH3KA+guGMDnPnYg5sCCOSm0czsQ7yAC7yTgPlkglsOC5Sl031kgPkcEPk/AfcZAbIIFm1LovsdA/IQI/BSH+0C4CIijBgEuxuE+bGE60G3mUUw5BgBU33O7
   </data>
  </layer>
  <objectgroup id="3" name="SpawnPoint">
@@ -26,9 +26,9 @@
   <object id="131" name="Melon" type="Fruit" x="416" y="144" width="32" height="32"/>
   <object id="140" name="Pineapple" type="Fruit" x="256" y="80" width="32" height="32"/>
   <object id="136" name="Pineapple" type="Fruit" x="272" y="224" width="32" height="32"/>
-  <object id="85" name="Kiwi" type="Fruit" x="528" y="96" width="32" height="32"/>
-  <object id="86" name="Kiwi" type="Fruit" x="528" y="144" width="32" height="32"/>
-  <object id="87" name="Kiwi" type="Fruit" x="528" y="192" width="32" height="32"/>
+  <object id="85" name="Kiwi" type="Fruit" x="528" y="80" width="32" height="32"/>
+  <object id="86" name="Kiwi" type="Fruit" x="528" y="128" width="32" height="32"/>
+  <object id="87" name="Kiwi" type="Fruit" x="528" y="176" width="32" height="32"/>
   <object id="88" name="Apple" type="Fruit" x="64" y="176" width="32" height="32"/>
   <object id="132" type="Saw" x="288" y="288" width="32" height="32">
    <properties>
@@ -45,6 +45,12 @@
    </properties>
   </object>
   <object id="141" type="Checkpoint" x="368" y="64" width="64" height="64"/>
+  <object id="142" name="Chicken" type="Chicken" x="544" y="224" width="32" height="32">
+   <properties>
+    <property name="offNeg" type="float" value="10"/>
+    <property name="offPos" type="float" value="1"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="4" name="Collisions">
   <object id="109" x="32" y="48" width="16" height="272"/>
@@ -58,12 +64,12 @@
   <object id="117" x="400" y="208" width="64" height="16"/>
   <object id="120" x="400" y="256" width="176" height="48"/>
   <object id="121" x="512" y="272" width="64" height="32"/>
-  <object id="122" type="Platform" x="512" y="176" width="64" height="16"/>
+  <object id="122" type="Platform" x="512" y="160" width="64" height="16"/>
   <object id="123" type="Platform" x="48" y="208" width="48" height="16"/>
   <object id="124" type="Platform" x="48" y="160" width="48" height="16"/>
   <object id="125" type="Platform" x="48" y="112" width="48" height="16"/>
-  <object id="126" type="Platform" x="512" y="224" width="64" height="16"/>
-  <object id="127" type="Platform" x="512" y="128" width="64" height="16"/>
+  <object id="126" type="Platform" x="512" y="208" width="64" height="16"/>
+  <object id="127" type="Platform" x="512" y="112" width="64" height="16"/>
   <object id="128" x="368" y="128" width="64" height="16"/>
  </objectgroup>
 </map>
