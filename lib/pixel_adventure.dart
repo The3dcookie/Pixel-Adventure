@@ -38,9 +38,11 @@ class PixelAdventure extends FlameGame
           images.fromCache("HUD/Joystick.png"),
         ),
       ),
-      margin: const EdgeInsets.only(left: 32, bottom: 32),
+      margin: const EdgeInsets.only(left: 5, bottom: 20),
       // anchor: Anchor.center
     ).. priority = 10;
+
+    late SpriteComponent button = JumpButton();
 
   bool showControls = true;
 
@@ -96,7 +98,8 @@ class PixelAdventure extends FlameGame
       // anchor: Anchor.center
     ).. priority = 10;
 
-    add(joystick);
+          cam.viewport.add(joystick);
+
   }
 
   @override
@@ -160,8 +163,9 @@ class PixelAdventure extends FlameGame
 
           if (showControls) {
       // addJoystick();
-      add(joystick);
-      add(JumpButton());
+      cam.viewport.add(joystick);
+      cam.viewport.add(button..priority = 10);
+
 
       // logger.d("Can see: ${cam.canSee(joystick)}");
       logger.d("Logger Works");

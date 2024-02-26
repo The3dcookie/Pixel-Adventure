@@ -8,6 +8,7 @@ import 'package:pixel_adventure/components/collission_block.dart';
 import 'package:pixel_adventure/components/fruit.dart';
 import 'package:pixel_adventure/components/player.dart';
 import 'package:pixel_adventure/components/saw.dart';
+import 'package:pixel_adventure/components/test_anim.dart';
 import 'package:pixel_adventure/pixel_adventure.dart';
 
 class Levels extends World with HasGameRef<PixelAdventure>{
@@ -112,6 +113,15 @@ class Levels extends World with HasGameRef<PixelAdventure>{
               offPos: offPos,
             );
             add(chicken);
+
+
+            //Test CHaracter
+            // final test = Test(
+            //   position: Vector2(spawnPoint.x, spawnPoint.y), 
+            //   size: Vector2(spawnPoint.width, spawnPoint.height),
+            // );
+            // add(test);
+
             break;
           default:
         }
